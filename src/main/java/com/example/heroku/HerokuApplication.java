@@ -65,7 +65,7 @@ public class HerokuApplication {
 
       ArrayList<String> output = new ArrayList<String>();
       while (rs.next()) {
-        output.add("Read from DB: " + rs.getTimestamp("tick") + randomString());
+        output.add("Read from DB: " + rs.getTimestamp("tick") + " " + randomString());
       }
 
       model.put("records", output);
@@ -88,15 +88,10 @@ public class HerokuApplication {
   }
 
   String randomString(){
-    int leftLimit = 97; // letter 'a'
-    int rightLimit = 122; // letter 'z'
-    int targetStringLength = 10;
-    Random random = new Random();
+    byte[] array = new byte[7]; // length is bounded by 7
+    new Random().nextBytes(array);
 
-    String generatedString = random.ints(leftLimit, rightLimit + 1)
-      .limit(targetStringLength)
-      .collect(StringBuilder::new, StringBuilder::appendCodePoint, StringBuilder::append)
-      .toString();
+    String generatedString = new String(array, Charset.forName("UTF-8"));
 
 
     return generatedString;
