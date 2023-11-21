@@ -33,6 +33,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Map;
+import java.util.Random;
 
 @Controller
 @SpringBootApplication
@@ -58,7 +59,7 @@ public class HerokuApplication {
     try (Connection connection = dataSource.getConnection()) {
       Statement stmt = connection.createStatement();
       stmt.executeUpdate("CREATE TABLE IF NOT EXISTS ticks (tick timestamp)");
-      stmt.executeUpdate("INSERT INTO ticks VALUES (now())");
+      stmt.executeUpdate("INSERT INTO ticks VALUES (now() " + randomString() + " )");
       ResultSet rs = stmt.executeQuery("SELECT tick FROM ticks");
 
       ArrayList<String> output = new ArrayList<String>();
@@ -85,4 +86,11 @@ public class HerokuApplication {
     }
   }
 
+  String randomString(){
+    byte[] array = new byte[7]; // length is bounded by 7
+    new Random().nextBytes(array);
+    String generatedString = new String(array, Charset.forName("UTF-8"));
+
+    return generatedString;
+  }
 }
